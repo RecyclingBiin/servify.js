@@ -32,7 +32,7 @@ async function Router(req, res, file, status, options) {
     /* if (!fs.existsSync(resolvedFile) || !fs.statSync(resolvedFile).isFile()) {
         throw new Error("The file parameter is not a resolvable path or data buffer")
     } */
-
+    
 
 
     try {
@@ -57,22 +57,18 @@ async function Router(req, res, file, status, options) {
             console.log(colors.yellow("Responding with generic 404"))
         }
     }
-    respond(status, mime.getType(pathOut), data, res, this.options.xPoweredBy) // Responds to req with data
+    respond(status, mime.getType(pathOut), data, res, (this.options.xPoweredBy)? {"X-Powered-By": "Servify.js"} : {}) // Responds to req with data
     return
 }
 
 /* 
     FUNCTIONS
 */
-async function respond(status, dataType, data, res, xPoweredBy) {
-    let headerOpts = {}
+async function respond(status, dataType, data, res, headers) {
+    if (headers.length < 1) headers = JSON.parse(headers) // Custom headers
+    headers["Content-Type"] = dataType // Then adds the content type so client can parse
 
-    if (xPoweredBy) headerOpts["X-Powered-By"] = "Servify.js"
-    // Allows for further expansion and possibly custom headers?? :D
-
-    headerOpts["Content-Type"] = dataType // Then adds the content type so client can parse
-
-    res.writeHead(status, headerOpts)
+    res.writeHead(status, headers)
     res.write(data)
     res.end()
 }
