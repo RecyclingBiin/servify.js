@@ -1,7 +1,7 @@
 
 # Servify.js
 *Its time to ditch Express.js and messy frameworks*
-![](https://i.ibb.co/QfJNRZM/sample01.png)
+![](https://i.ibb.co/G3bQNFG/sample01-alt.png)
 
 ## About
 ### Why Servify.js?
