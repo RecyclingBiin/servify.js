@@ -12,9 +12,22 @@ Servify.js is a simple, quick, and easy to use server deployment tool. It allows
 
 ### Quick Setup
 As long as Node.js is installed, Servify.js can be started up in a couple of seconds with only a few lines of code.
-![enter image description here](https://i.ibb.co/NNJ60pr/codescreenshot.png)
 
-### Speed
+### Customization
+With features such as auto-routing, custom working directories, scheduled restarts, custom favicons, and more, the possibilities are endless. Run a blog, make an API, or anything else!
+![](https://i.ibb.co/VSPyR54/sample02.png)
+
+## Getting Started
+### Prerequisites
+You need to have Node.js (6.0.x) or greater installed along with NPM.  Make sure your project is already initialized
+### Installing
+```bash
+npm install servify.js
+```
+### Running
+![](https://i.ibb.co/NNJ60pr/codescreenshot.png)
+
+## Speed
 To benchmark we used [loadtest](https://www.npmjs.com/package/loadtest)
 ```bash
 loadtest http://localhost:80/ -t 20 -c 25
@@ -71,23 +84,4 @@ loadtest http://localhost:80/ -t 20 -c 25
         95%      14 ms
         99%      19 ms
         100%      61 ms (longest request)
-```
-
-## Getting Started
-### Prerequisites
-You need to have Node.js (6.0.x) or greater installed along with NPM.  Make sure your project is already initialized
-### Installing
-```bash
-npm install servify.js
-```
-### Running
-```javascript
-// Sample JS file
-const  App  =  require("servify.js")
-const  servify  =  new  App()
-
-servify.createServer()
-servify.on("GET",  (req,  res)  =>  {
-	console.log("Hey, someone visited my site!")
-})
 ```
