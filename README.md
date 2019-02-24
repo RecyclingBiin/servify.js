@@ -15,7 +15,7 @@ As long as Node.js is installed, Servify.js can be started up in a couple of sec
 
 ### Customization
 With features such as auto-routing, custom working directories, scheduled restarts, custom favicons, and more, the possibilities are endless. Run a blog, make an API, or anything else!
-![](https://i.ibb.co/VSPyR54/sample02.png)
+![](https://i.ibb.co/V9HcXCx/sample02-alt.png)
 
 ## Getting Started
 ### Prerequisites
