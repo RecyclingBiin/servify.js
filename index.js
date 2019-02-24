@@ -1,0 +1,1 @@
+module.exports = require("./src/application") // Points to the application from the init point

@@ -1,0 +1,36 @@
+loadtest http://localhost:80/ -t 20 -c 25 -k --rps 200
+
+Pre-Release:
+    (23 Feb 2019) Test 1:
+        Using: loadtest http://localhost:80/ -t 20 -c 25 -k --rps 200
+        ** Taken before router improvements
+
+        Completed requests:  3899
+        Total errors:        0
+        Total time:          20.007877801 s
+        Requests per second: 195
+        Mean latency:        6.9 ms
+
+        Percentage of the requests served within a certain time
+        50%      2 ms
+        90%      16 ms
+        95%      25 ms
+        99%      74 ms
+        100%      104 ms (longest request)
+    
+    (23 Feb 2019) Test 2: 
+        (Shrunk the code from 300 lines down to ~150 and fixed major redundancies)
+        Using: loadtest http://localhost:80/ -t 20 -c 25 -k --rps 200
+        ** Taken after major router improvements
+        Completed requests:  3907
+        Total errors:        0
+        Total time:          20.005092201 s
+        Requests per second: 195
+        Mean latency:        3.7 ms
+
+        Percentage of the requests served within a certain time
+        50%      2 ms
+        90%      9 ms
+        95%      14 ms
+        99%      19 ms
+        100%      61 ms (longest request)
