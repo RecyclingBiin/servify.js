@@ -47,7 +47,7 @@ function Server(options) {
         if (this.options.autoRoute == true) {
             Router(req, res, req.url, 200, options)
         }
-    }).listen(this.options.port) // Listener on custom port (TODO: custom IP)
+    }).listen(process.env.PORT || this.options.port) // Listener on custom port (TODO: custom IP)
 
     setTimeout(() => { // Logs success to console
         progressSpinner.succeed("Server initalized".green)
