@@ -6,6 +6,7 @@ const Router = require("./router") // Router
 const url = require("url") // URI parsing and etc.
 const fs = require("fs") // Filesystem
 const path = require("path") // Path parsing
+const cache = require("memory-cache")
 
 
 function Server(options) {
@@ -20,13 +21,15 @@ function Server(options) {
     this.options.customErrorPages = (typeof this.options.customErrorPages !== "undefined") ? path.normalize(this.options.customErrorPages) : false // options.customErrorPages: displays custom error pages (ie. 404) from root directory; defualts to false
     this.options.pagesDirectory = path.normalize((typeof this.options.pagesDirectory !== "undefined") ? this.options.pagesDirectory : __dirname.slice(0, -4) + "/pages") // options.pagesDirectory: working directory (aka root) for pages; defaults to "../pages/"
     this.options.favicon = (typeof this.options.favicon !== "undefined") ? path.normalize(this.options.favicon) : null // options.favicon: custom favicon; default is null (no favicon)
+    this.options.debug = (typeof this.options.debug !== "undefined") ? this.options.debug : false // options.debug: shows debug info; default is false (no messages)
+    
 
     this.server = http.createServer((req, res) => { // Sets up http server with listener attached
         req.on('error', (err) => { // Error handler
             //throw new Error(err)
         })
 
-        if (req.url === "/favicon.ico") {
+        if (req.url === "/favicon.ico" && req.method === "GET") {
             if (this.options.favicon !== null) {
                 res.writeHead(200)
                 try {
@@ -40,7 +43,7 @@ function Server(options) {
             res.end()
             return
         }
-        console.log(colors.gray("[REQ] " + req.method + " was made upon " + req.url))
+        if (this.options.debug) console.log(colors.gray("[REQ] " + req.method + " was made upon " + req.url))
         if (this.options.autoRoute == true) {
             Router(req, res, req.url, 200, options)
         }
