@@ -3,8 +3,10 @@
 ### Changes:
  - Router is now faster because file discovery was localized and abstracted
  - The router *acutally* now checks if it can access a file before reading from it
+### Removals:
+ - Custom favicon feature removed. Instead, supply a favicon in the root working directory where the pages exist.
 ### Misc:
- - Benchmarked Again! 
+ - Benchmarked Again! Impressive Results on Localhost
 
 ## 0.4.2
 ### Additions:

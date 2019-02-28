@@ -20,7 +20,6 @@ function Server(options) {
     this.options.xPoweredBy = (typeof this.options.xPoweredBy !== "undefined") ? this.options.xPoweredBy : true // options.xPoweredBy: defaults to true (will enable/disable the X-Powered-By header)
     this.options.customErrorPages = (typeof this.options.customErrorPages !== "undefined") ? path.normalize(this.options.customErrorPages) : false // options.customErrorPages: displays custom error pages (ie. 404) from root directory; defualts to false
     this.options.pagesDirectory = path.normalize((typeof this.options.pagesDirectory !== "undefined") ? this.options.pagesDirectory : __dirname.slice(0, -4) + "/pages") // options.pagesDirectory: working directory (aka root) for pages; defaults to "../pages/"
-    this.options.favicon = (typeof this.options.favicon !== "undefined") ? path.normalize(this.options.favicon) : null // options.favicon: custom favicon; default is null (no favicon)
     this.options.debug = (typeof this.options.debug !== "undefined") ? this.options.debug : false // options.debug: shows debug info; default is false (no messages)
     
 
@@ -29,20 +28,6 @@ function Server(options) {
             //throw new Error(err)
         })
 
-        if (req.url === "/favicon.ico" && req.method === "GET") {
-            if (this.options.favicon !== null) {
-                res.writeHead(200)
-                try {
-                    res.write(fs.readFileSync(this.options.pagesDirectory + this.options.favicon))
-                } catch (err) {
-                    throw new Error("Object is not a valid resolvable file or path")
-                }
-            } else {
-                res.writeHead(204) // No content... will change if favicon is provided via SettingsServiceWorker
-            }
-            res.end()
-            return
-        }
         if (this.options.debug) console.log(colors.gray("[REQ] " + req.method + " was made upon " + req.url))
         if (this.options.autoRoute == true) {
             Router(req, res, req.url, 200, options)
