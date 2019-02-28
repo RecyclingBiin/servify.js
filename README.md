@@ -83,3 +83,11 @@ loadtest http://localhost:80/ -t 20 -c 25
         99%      508 ms
         100%      733 ms (longest request)
 ```
+
+## Documentation
+Need help? Look at our work in progress developer guides [here](https://recyclingbin.gitbook.io/servify-js/.
+## Contributing
+Want to become a contributor? Start by reading the [Contribution Guidelines](https://github.com/BryceDaly/servify.js/blob/master/CONTRIBUTING.md)!
+## Licence
+The official licence for this Servify.js repo is the MIT licence unless otherwise stated. (View [LICENCE](https://github.com/BryceDaly/servify.js/blob/master/LICENSE) for details)
+
