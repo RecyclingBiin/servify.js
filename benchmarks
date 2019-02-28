@@ -52,20 +52,30 @@ Pre-Release:
 
     (27 Feb 2019) Test 4:
         (Now hosted on Heroku in USA)
-        Completed requests:  3900
+        Completed requests:  3905
         Total errors:        0
-        Total time:          20.0023732 s
+        Total time:          20.004686299 s
         Requests per second: 195
-        Mean latency:        45.7 ms
+        Mean latency:        43.2 ms
 
         Percentage of the requests served within a certain time
-        50%      39 ms
-        90%      56 ms
-        95%      66 ms
-        99%      164 ms
-        100%      3142 ms (longest request)
-        Requests: 3900, requests per second: 200, mean latency: 43.3 ms
+        50%      38 ms
+        90%      52 ms
+        95%      64 ms
+        99%      149 ms
+        100%      415 ms (longest request)
     
     (27 Feb 2019) Test 5:
         (Now hosted in Heroku in Europe)
-        
+        Completed requests:  3889
+        Total errors:        0
+        Total time:          20.0052501 s
+        Requests per second: 194
+        Mean latency:        142.5 ms
+
+        Percentage of the requests served within a certain time
+        50%      126 ms
+        90%      144 ms
+        95%      154 ms
+        99%      508 ms
+        100%      733 ms (longest request)
