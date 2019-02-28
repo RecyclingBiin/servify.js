@@ -36,52 +36,50 @@ loadtest http://localhost:80/ -t 20 -c 25
 
  - Intel i5-7200U @2.50 GHz
  - 8 GB RAM
-#### Software:
- - Hapi.js 18.1.0
- - Express.js 4.16.4
 #### Results:
-##### Hapi.js
+##### Servify.js (Localhost)
 ```
-		Completed requests:  2011
+        (Massive Performance improvements and caching)
+        Completed requests:  3910
         Total errors:        0
-        Total time:          20.009875312 s
-        Requests per second: 101
-        Mean latency:        7.2 ms
-
-        Percentage of the requests served within a certain time
-        50%      3 ms
-        90%      10 ms
-        95%      22 ms
-        99%      58 ms
-        100%      68 ms (longest request)
-```
-##### Express
-```
-		Completed requests:  4102
-        Total errors:        0
-        Total time:          20.002137841 s
-        Requests per second: 205
-        Mean latency:        3.2 ms
-
-        Percentage of the requests served within a certain time
-        50%      2 ms
-        90%      6 ms
-        95%      10 ms
-        99%      19 ms
-        100%      58 ms (longest request)
-```
-##### Servify.js
-```
-		Completed requests:  3907
-        Total errors:        0
-        Total time:          20.005092201 s
+        Total time:          20.008938698999998 s
         Requests per second: 195
-        Mean latency:        3.7 ms
+        Mean latency:        0.7 ms
 
         Percentage of the requests served within a certain time
-        50%      2 ms
-        90%      9 ms
-        95%      14 ms
-        99%      19 ms
-        100%      61 ms (longest request)
+        50%      1 ms
+        90%      1 ms
+        95%      1 ms
+        99%      2 ms
+        100%      121 ms (longest request)
+```
+##### Servify.js (Heroku USA)
+```
+        Completed requests:  3905
+        Total errors:        0
+        Total time:          20.004686299 s
+        Requests per second: 195
+        Mean latency:        43.2 ms
+
+        Percentage of the requests served within a certain time
+        50%      38 ms
+        90%      52 ms
+        95%      64 ms
+        99%      149 ms
+        100%      415 ms (longest request)
+```    
+##### Servify.js (Heroku Europe)
+```
+        Completed requests:  3889
+        Total errors:        0
+        Total time:          20.0052501 s
+        Requests per second: 194
+        Mean latency:        142.5 ms
+
+        Percentage of the requests served within a certain time
+        50%      126 ms
+        90%      144 ms
+        95%      154 ms
+        99%      508 ms
+        100%      733 ms (longest request)
 ```
