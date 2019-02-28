@@ -10,6 +10,8 @@ const cache = require("memory-cache")
 async function Router(req, res, file, status, options) {
     /* 
         STRUCTURES   
+
+        Todo: fix this fucking mess and replace it with an option handler
     */
     this.req = req
     this.res = res
@@ -18,7 +20,9 @@ async function Router(req, res, file, status, options) {
     this.options.customErrorPages = (typeof this.options.customErrorPages !== "undefined") ? this.options.customErrorPages : false // options.customErrorPages: displays custom error pages (ie. 404) from root directory; defualts to false
     this.options.pagesDirectory = path.normalize((typeof this.options.pagesDirectory !== "undefined") ? this.options.pagesDirectory : __dirname.slice(0, -4) + "/pages") // options.pagesDirectory: working directory (aka root) for pages; defaults to "../pages/"
     this.options.debug = (typeof this.options.debug !== "undefined") ? this.options.debug : false // options.debug: shows debug info; default is false (no messages)
-    this.options.useCache = (typeof this.options.useCache !== "undefined") ? this.options.useCache : true // options.useCache: whether or not to use caching; defaults to true
+    this.options.useServerSideCache = (typeof this.options.useServerSideCache !== "undefined") ? this.options.useServerSideCache : true // options.useServerSideCache: whether or not to use server caching; defaults to true
+    this.options.useClientSideCache = (typeof this.options.useClientSideCache !== "undefined") ? this.options.useClientSideCache : true // options.useClientSideCache: whether or not to use client caching; defaults to true
+    this.options.maxCacheTimeout = (typeof this.options.maxCacheTimeout !== "undefined") ? this.options.maxCacheTimeout : 3600 // options.maxCacheTimeout: the max amount of seconds cache can exist client-side; defaults to 1 hr
 
     /* 
         VARIABLES
@@ -31,84 +35,46 @@ async function Router(req, res, file, status, options) {
     let resolvedFile = this.options.pagesDirectory + file // resolved file given
     let customErrorPath = this.options.pagesDirectory + "404.html" // Custom Error Page Path
     let tempPagesDir = __dirname + "/temp/404.html" // Temp Error Page Path
-    /* if (!fs.existsSync(resolvedFile) || !fs.statSync(resolvedFile).isFile()) {
-        throw new Error("The file parameter is not a resolvable path or data buffer")
-    } */
-    
 
+    /* 
+        Handler
+    */
 
+    // Should change to a switch statement if possible
     try {
-        cachedFile = cache.get(resolvedFile) // Gets cached file (if any)
-        if (this.options.useCache && cachedFile) {
-            // Cahce structure: {data: buffer, type: fileType}
-            dataType = cachedFile.type
-            data = cachedFile.data // Sets buffer "data"
+        cachedFile = await serverSideCaching(resolvedFile, this.options.useServerSideCache)
+        dataType = cachedFile.dataType
+        data = cachedFile.data
 
-        } else {
-            fs.accessSync(resolvedFile, fs.constants.R_OK | fs.constants.W_OK) // Attempts access to desired file
-            dataType = mime.getType(resolvedFile)
-            data = await fs.readFileSync(resolvedFile) // Sets buffer "data"
-            if (this.options.useCache) cache.put(resolvedFile, {data: data, type: dataType})
-
-        }
     } catch (err) {
         if (this.options.debug) console.log(colors.yellow("[REQ] Warning: A request was made on an invalid file (" + req.url + ")"))
 
         if (this.options.customErrorPages) { // Checks if the customErrorPages opt param is changed
             try {
-                cachedFile = cache.get(customErrorPath) // Gets cached file (if any)
-                if (this.options.useCache && cachedFile) {
-                    // Cahce structure: {data: buffer, type: fileType}
-                    dataType = cachedFile.type
-                    data = cachedFile.data // Sets buffer "data"
-
-                } else {
-                    fs.accessSync(customErrorPath, fs.constants.R_OK | fs.constants.W_OK) // Attempts access to custom error file
-                    dataType = mime.getType(customErrorPath)
-                    data = await fs.readFileSync(customErrorPath) // Attempts to get custom if there is one
-                    if (this.options.useCache) cache.put(customErrorPath, {data: data, type: dataType})
-
-                }
-                
+                cachedFile = await serverSideCaching(customErrorPath, this.options.useServerSideCache)
+                dataType = cachedFile.dataType
+                data = cachedFile.data
                 if (this.options.debug) console.log(colors.yellow("Responding with custom 404"))
 
             } catch (err) { // Displays generic 404
-                cachedFile = cache.get(tempPagesDir) // Gets cached file (if any)
-                if (this.options.useCache && cachedFile) {
-                    // Cahce structure: {data: buffer, type: fileType}
-                    dataType = cachedFile.type
-                    data = cachedFile.data // Sets buffer "data"
-
-                } else {
-                    fs.accessSync(tempPagesDir, fs.constants.R_OK | fs.constants.W_OK) // Attempts access to custom error file
-                    dataType = mime.getType(tempPagesDir)
-                    data = await fs.readFileSync(tempPagesDir) // Attempts to get custom if there is one
-                    if (this.options.useCache) cache.put(tempPagesDir, {data: data, type: dataType})
-
-                }
-
+                cachedFile = await serverSideCaching(tempPagesDir, this.options.useServerSideCache)
+                dataType = cachedFile.dataType
+                data = cachedFile.data
                 if (this.options.debug) console.log(colors.yellow("Responding with generic 404"))
             }
 
         } else { // Displays generic 404
-            cachedFile = cache.get(tempPagesDir) // Gets cached file (if any)
-                if (this.options.useCache && cachedFile) {
-                    // Cahce structure: {data: buffer, type: fileType}
-                    dataType = cachedFile.type
-                    data = cachedFile.data // Sets buffer "data"
-
-                } else {
-                    fs.accessSync(tempPagesDir, fs.constants.R_OK | fs.constants.W_OK) // Attempts access to generic error file
-                    dataType = mime.getType(tempPagesDir)
-                    data = await fs.readFileSync(tempPagesDir) // Attempts to get generic if there is one
-                    if (this.options.useCache) cache.put(tempPagesDir, {data: data, type: dataType})
-
-                }
+            cachedFile = await serverSideCaching(tempPagesDir, this.options.useServerSideCache)
+            dataType = cachedFile.dataType
+            data = cachedFile.data
             if (this.options.debug) console.log(colors.yellow("Responding with generic 404"))
 
         }
     }
-    respond(status, dataType, data, res, (this.options.xPoweredBy)? {"X-Powered-By": "Servify.js"} : {}) // Responds to req with data
+    let _tempHeaders = {}
+    if (this.options.xPoweredBy) _tempHeaders["X-Powered-By"] = "Servify.js"
+    if (this.options.useClientSideCache) { _tempHeaders["Cache-Control"] = "max-age=" + this.options.maxCacheTimeout } else { _tempHeaders["Cache-Control"] = "no-cache" }
+    respond(status, dataType, data, res, _tempHeaders) // Responds to req with data
     return
 }
 
@@ -118,10 +84,31 @@ async function Router(req, res, file, status, options) {
 async function respond(status, dataType, data, res, headers) {
     if (headers.length < 1) headers = JSON.parse(headers) // Custom headers
     headers["Content-Type"] = dataType // Then adds the content type so client can parse
-
     res.writeHead(status, headers)
     res.write(data)
     res.end()
+}
+
+async function serverSideCaching(path, useServerSideCache) {
+    try {
+        cachedFile = cache.get(path) // Gets cached file (if any)
+        if (useServerSideCache && cachedFile) {
+            // Cahce structure: {data: buffer, type: fileType}
+            dataType = cachedFile.type
+            data = cachedFile.data // Sets buffer "data"
+
+        } else {
+            fs.accessSync(path, fs.constants.R_OK | fs.constants.W_OK) // Attempts access to desired file
+            dataType = mime.getType(path)
+            data = await fs.readFileSync(path) // Sets buffer "data"
+            if (useServerSideCache) cache.put(path, { data: data, type: dataType })
+
+        }
+        return { data: data, dataType: dataType }
+    } catch (err) {
+        throw new Error()
+    }
+
 }
 
 module.exports = Router
