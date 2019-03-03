@@ -85,7 +85,7 @@ loadtest http://localhost:80/ -t 20 -c 25
 ```
 
 ## Documentation
-Need help? Look at our work in progress developer guides [here](https://recyclingbin.gitbook.io/servify-js/.
+Need help? Look at our work in progress developer guides [here](https://recyclingbin.gitbook.io/servify-js/).
 ## Contributing
 Want to become a contributor? Start by reading the [Contribution Guidelines](https://github.com/BryceDaly/servify.js/blob/master/CONTRIBUTING.md)!
 ## Licence

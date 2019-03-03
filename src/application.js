@@ -25,11 +25,13 @@ class App extends EventEmitter {
             if (req.url === "/favicon.ico") return // Denies favicon request... TODO!
             if (req.method === 'GET') this.emit('GET', req, res) // Emits GET event
             if (req.method === 'POST') this.emit('POST', req, res) // Emits POST event
+            if (req.method === 'PUT') this.emit('PUT', req, res) // Emits PUT event
+            if (req.method === 'DELETE') this.emit('DELETE', req, res) // Emits DELETE event
         })
     }
 
     // WORK ON THE PROTOTYPES AS THEY ARE FAULTY AND CAUSE SERVER INSTABILITY
-    /*// Stops the server
+    // Stops the server
     stopServer() {
         this.server.stopServer()
     }
@@ -44,8 +46,8 @@ class App extends EventEmitter {
 
     // Checks if the app is listening
     get isListening() {
-        this.server.isListening()
-    }*/
+        return this.server.isListening()
+    }
 }
 
 module.exports = App

@@ -1,4 +1,18 @@
 # Changelog
+## 0.5.0
+### Additions:
+ - Added server prototypes like `servify.stopServer()` and others that can control the server (ie. restart)
+ - You can restart the server at a set interval. For example `servify.restartInterval(86400000)` will make the server restart every 24 hours. This breaks any current active connections and flushes the cache
+ - The router now accepts a string of raw HTML as a response! Specify whether or not it is a string of HTML or a resolvable file path by enabling the `rawHTMLResponse` flag.
+### Changes:
+ - Options are now parsed through `options.js` instead of being parsed through each call. Abstraction makes everything better!
+ - With auto-routing enabled, the router is now being fed the right configuration options.
+ - On NT or Win32 Systems, you have to confirm upon process exit. Saying yes or no will not affect if the process actually exits.
+ - The `pagesDirectory` now accepts UNIX styled and npm require styled file paths
+### Removals
+ - Redline has been removed as a dependency due to a security issue
+ - Reduced un-used dependencies and requires on each call.
+
 ## 0.4.3
 ### Changes:
  - Router is now faster because file discovery was localized and abstracted

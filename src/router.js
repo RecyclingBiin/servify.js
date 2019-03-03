@@ -1,29 +1,23 @@
 // Requires
-const http = require("http") // Basic server functionality
-const url = require("url") // URI decomposition
 const fs = require("fs") // FileSys
 const colors = require("colors") // Pretty colors
 const mime = require("mime") // Detecting Filetypes and Parsing them for HTML headers
-const path = require("path") // Path parsing
+const path = require("path-browserify") // Path parsing
 const cache = require("memory-cache")
+const Options = require("./options")
+
+let that
 
 async function Router(req, res, file, status, options) {
     /* 
         STRUCTURES   
 
-        Todo: fix this fucking mess and replace it with an option handler
     */
     this.req = req
     this.res = res
-    this.options = (typeof options !== "undefined") ? options : {}
-    this.options.xPoweredBy = (typeof this.options.xPoweredBy !== "undefined") ? this.options.xPoweredBy : true // options.xPoweredBy: defaults to true (will enable/disable the X-Powered-By header)
-    this.options.customErrorPages = (typeof this.options.customErrorPages !== "undefined") ? this.options.customErrorPages : false // options.customErrorPages: displays custom error pages (ie. 404) from root directory; defualts to false
-    this.options.pagesDirectory = path.normalize((typeof this.options.pagesDirectory !== "undefined") ? this.options.pagesDirectory : __dirname.slice(0, -4) + "/pages") // options.pagesDirectory: working directory (aka root) for pages; defaults to "../pages/"
-    this.options.debug = (typeof this.options.debug !== "undefined") ? this.options.debug : false // options.debug: shows debug info; default is false (no messages)
-    this.options.useServerSideCache = (typeof this.options.useServerSideCache !== "undefined") ? this.options.useServerSideCache : true // options.useServerSideCache: whether or not to use server caching; defaults to true
-    this.options.useClientSideCache = (typeof this.options.useClientSideCache !== "undefined") ? this.options.useClientSideCache : true // options.useClientSideCache: whether or not to use client caching; defaults to true
-    this.options.maxCacheTimeout = (typeof this.options.maxCacheTimeout !== "undefined") ? this.options.maxCacheTimeout : 3600 // options.maxCacheTimeout: the max amount of seconds cache can exist client-side; defaults to 1 hr
+    this.options = Options(options)
 
+    that = this
     /* 
         VARIABLES
     */
@@ -37,8 +31,12 @@ async function Router(req, res, file, status, options) {
     let tempPagesDir = __dirname + "/temp/404.html" // Temp Error Page Path
 
     /* 
-        Handler
+        HANDLER
     */
+    if (this.options.rawHTMLResponse) {
+        respond(status, "text/html", file, res, {}) // Responds to req with HTML string
+        return
+    }
 
     // Should change to a switch statement if possible
     try {
@@ -71,18 +69,22 @@ async function Router(req, res, file, status, options) {
 
         }
     }
-    let _tempHeaders = {}
-    if (this.options.xPoweredBy) _tempHeaders["X-Powered-By"] = "Servify.js"
-    if (this.options.useClientSideCache) { _tempHeaders["Cache-Control"] = "max-age=" + this.options.maxCacheTimeout } else { _tempHeaders["Cache-Control"] = "no-cache" }
-    respond(status, dataType, data, res, _tempHeaders) // Responds to req with data
+    respond(status, dataType, data, res, {}) // Responds to req with file data
     return
 }
 
 /* 
     FUNCTIONS
 */
+function isOptEmpty(option, fallback) {
+    return (typeof option !== "undefined") ? option : fallback
+}
+
 async function respond(status, dataType, data, res, headers) {
     if (headers.length < 1) headers = JSON.parse(headers) // Custom headers
+    if (that.options.xPoweredBy) headers["X-Powered-By"] = "Servify.js"
+    if (that.options.useClientSideCache) { headers["Cache-Control"] = "max-age=" + that.options.maxCacheTimeout } else { headers["Cache-Control"] = "no-cache" }
+
     headers["Content-Type"] = dataType // Then adds the content type so client can parse
     res.writeHead(status, headers)
     res.write(data)

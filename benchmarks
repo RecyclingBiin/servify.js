@@ -79,3 +79,18 @@ Pre-Release:
         95%      154 ms
         99%      508 ms
         100%      733 ms (longest request)
+
+    (02 March 2019) Test 6
+        (Hosted on localhost but with Servify.js 0.5.0)
+        Completed requests:  3922
+        Total errors:        0
+        Total time:          20.009325 s
+        Requests per second: 196
+        Mean latency:        0.7 ms
+
+        Percentage of the requests served within a certain time
+        50%      1 ms
+        90%      1 ms
+        95%      1 ms
+        99%      1 ms
+        100%      33 ms (longest request)
