@@ -13,5 +13,5 @@
 - [X] POST and other request support
 - [X] (!) Support raw html instead of just purely files
 - [ ] (!) Make it so it regularly flushed cache or just get rid of server-side cache due to modern browser caching features
-- [ ] (!) Add on NPM
+- [X] (!) Add on NPM
 - [ ] CLI?
